@@ -1,0 +1,16 @@
+{
+  "name": "Drink-Mixer-Back-End",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:z0san/Drink-Mixer-Back-End.git",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^14.14.41",
+    "nodemon": "^2.0.7",
+    "raspi-serial": "^6.0.0",
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "start:dev": "nodemon"
+  }
+}
