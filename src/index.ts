@@ -2,7 +2,7 @@ import SerialPort from "serialport";
 const path = "/dev/ttyS0";
 const Readline = SerialPort.parsers.Readline;
 const serial_port = new SerialPort(path);
-const parser = new Readline({ delimiter: "\n" });
+const parser = new Readline({ delimiter: "!" });
 import express from "express";
 import { Request, Response } from "express";
 const app = express();
@@ -10,10 +10,12 @@ app.use(express.json());
 const port = 3000;
 
 const serial_handler = (data: string) => {
-	console.log("handling: " + data);
-	// if (data == "test") {
-	// 	serial_port.write("test indeed\n");
-	// }
+	let nice_string = "";
+	for (let char = 0; char < data.length; char++) {
+		if (data.charCodeAt(char) !== 65533) nice_string += data[char];
+	}
+	console.log("handling: " + nice_string);
+	serial_port.write(data);
 };
 
 serial_port.pipe(parser);
@@ -25,8 +27,8 @@ app.post("/", (req: Request, res: Response) => {
 		console.log("got motor request");
 		let motor = body.motor;
 		let time = body.time;
-		let start_string = "motor " + String(motor) + " " + "on\n";
-		let end_string = "motor " + String(motor) + " " + "off\n";
+		let start_string = "pmotor " + String(motor) + " " + "on\n";
+		let end_string = "pmotor " + String(motor) + " " + "off\n";
 		serial_port.write(start_string);
 		setTimeout(() => serial_port.write(end_string), time);
 	}
