@@ -6,11 +6,18 @@
   "license": "MIT",
   "dependencies": {
     "@types/node": "^14.14.41",
+    "@types/serialport": "^8.0.1",
+    "express": "^4.17.1",
     "nodemon": "^2.0.7",
     "raspi-serial": "^6.0.0",
+    "serialport": "^9.0.7",
     "typescript": "^4.2.4"
   },
   "scripts": {
     "start:dev": "nodemon"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.11",
+    "tslint": "^6.1.3"
   }
 }
