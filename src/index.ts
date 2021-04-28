@@ -59,12 +59,13 @@ app.post("/", (req: Request, res: Response) => {
 
 
 app.get("/custom", (req: Request, res: Response) => {
+	console.log("got get request");
 	res.send(custom_drinks);
-}
+});
 
 
 app.listen(port, () =>
-console.log(`Example app listening at http://localhost:${port}`)
+	console.log(`Example app listening at http://localhost:${port}`)
 );
 
 console.log("ready");

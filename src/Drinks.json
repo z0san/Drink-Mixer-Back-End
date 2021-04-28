@@ -1,6 +1,7 @@
 {
 	"custom": [
 		{
+			"id": 0,
 			"name": "test drink",
 			"motor0": 30,
 			"motor1": 30,
@@ -10,6 +11,7 @@
 			"motor5": 0
 		},
 		{
+			"id": 1,
 			"name": "better drink",
 			"motor0": 30,
 			"motor1": 0,
