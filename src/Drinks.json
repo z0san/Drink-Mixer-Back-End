@@ -3,22 +3,16 @@
 		{
 			"id": 0,
 			"name": "test drink",
-			"motor0": 30,
-			"motor1": 30,
-			"motor2": 30,
-			"motor3": 0,
-			"motor4": 0,
-			"motor5": 0
+			"ratios": [
+				30, 30, 30, 0, 0, 0
+			]
 		},
 		{
 			"id": 1,
 			"name": "better drink",
-			"motor0": 30,
-			"motor1": 0,
-			"motor2": 0,
-			"motor3": 0,
-			"motor4": 70,
-			"motor5": 0
+			"ratios": [
+				30, 0, 0, 0, 70, 0
+			]
 		}
 	]
 }

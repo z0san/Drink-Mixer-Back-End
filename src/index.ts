@@ -9,7 +9,7 @@ const local_parser = new Readline({ delimiter: "\n" });
 import express from "express";
 import { Request, Response } from "express";
 
-import custom_drinks from "./Drinks.json";
+import customDrinks from "./Drinks.json";
 
 import cors from "cors";
 
@@ -20,20 +20,54 @@ app.use(cors());
 app.use(express.json());
 const port = 3000;
 
+// const bigTime = 300000;
+// const smallTime = 180000;
+const bigTime = 30000;
+const smallTime = 18000;
+
+
+const local_handler = (data: string ) => {
+	console.log("from arduino: " + data);
+}
+
+
+local_serial_port.pipe(local_parser);
+local_parser.on("data", local_handler);
+
+const pourDrink = (drinkNum: number, size: string) => {
+	let totalTime = 0;
+	if (size == "bid") totalTime = bigTime;
+	else totalTime = smallTime;
+
+	let drink = customDrinks.custom.filter((drink) => drink.id === drinkNum)[0];
+
+	for (let motor = 0; motor < 6; motor ++) {
+		if (drink.ratios[motor] != 0 ) {
+			console.log("pouring motor " + String(motor) + " for " + String(totalTime * drink.ratios[motor] / 100) + "millies");
+			let start_string = "pmotor " + String(motor) + " " + "on\n";
+			let end_string = "pmotor " + String(motor) + " " + "off\n";
+			setTimeout(() => local_serial_port.write(start_string), motor * 200);
+			setTimeout(() => local_serial_port.write(end_string), totalTime * drink.ratios[motor] / 100);
+		}
+	}
+}
+
 const serial_handler = (data: string) => {
 	let nice_string = "";
 	for (let char = 0; char < data.length; char++) {
 		if (data.charCodeAt(char) !== 65533) nice_string += data[char];
 	}
 	console.log("handling: " + nice_string);
-	local_serial_port.write(nice_string);
+	let tokens = nice_string.split(" ");
+	if (tokens[0] == "pcustom") {
+		pourDrink(tokens[1], tokens[2]);
+	} else {
+		local_serial_port.write(nice_string);
+	}
 };
 
 usb_serial_port.pipe(usb_parser);
 usb_parser.on("data", serial_handler);
-
-local_serial_port.pipe(local_parser);
-local_parser.on("data", (data: string) => console.log("fron arduino: " + data));
 
 app.post("/", (req: Request, res: Response) => {
 	let body = req.body;
@@ -53,6 +87,10 @@ app.post("/", (req: Request, res: Response) => {
 			let command_string = "pmotor " + String(motor) + " " + action + "\n";
 			local_serial_port.write(command_string);
 		}
+	} else if (body.type == "custom") {
+		console.log("got custom request");
+		console.debug(body);
+		pourDrink(body.drink, body.size);
 	}
 	res.send("Success!");
 });
@@ -60,7 +98,7 @@ app.post("/", (req: Request, res: Response) => {
 
 app.get("/custom", (req: Request, res: Response) => {
 	console.log("got get request");
-	res.send(custom_drinks);
+	res.send(customDrinks);
 });
 
 
