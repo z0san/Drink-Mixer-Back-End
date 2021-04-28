@@ -20,10 +20,10 @@ app.use(cors());
 app.use(express.json());
 const port = 3000;
 
-// const bigTime = 300000;
-// const smallTime = 180000;
-const bigTime = 30000;
-const smallTime = 18000;
+const bigTime = 300000;
+const smallTime = 180000;
+// const bigTime = 30000;
+// const smallTime = 18000;
 
 
 const local_handler = (data: string ) => {
@@ -47,7 +47,10 @@ const pourDrink = (drinkNum: number, size: string) => {
 			let start_string = "pmotor " + String(motor) + " " + "on\n";
 			let end_string = "pmotor " + String(motor) + " " + "off\n";
 			setTimeout(() => local_serial_port.write(start_string), motor * 200);
-			setTimeout(() => local_serial_port.write(end_string), totalTime * drink.ratios[motor] / 100);
+			setTimeout(() => {
+				local_serial_port.write(end_string);
+				console.log("turnning off motor " + String(motor));
+			}, (totalTime * drink.ratios[motor] / 100) + motor * 200);
 		}
 	}
 }
@@ -60,7 +63,7 @@ const serial_handler = (data: string) => {
 	console.log("handling: " + nice_string);
 	let tokens = nice_string.split(" ");
 	if (tokens[0] == "pcustom") {
-		pourDrink(tokens[1], tokens[2]);
+		pourDrink(+tokens[1], tokens[2]);
 	} else {
 		local_serial_port.write(nice_string);
 	}
